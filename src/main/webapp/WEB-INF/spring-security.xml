@@ -1,0 +1,53 @@
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/security
+	http://www.springframework.org/schema/security/spring-security-3.2.xsd">	
+	
+	<http auto-config="true">
+		<intercept-url pattern="/file/**" access="ROLE_USER" />
+		<!-- <intercept-url pattern="/testing123/**" access="ROLE_USER" />-->
+		<intercept-url pattern="/test/**" access="ROLE_USER" />
+		<intercept-url pattern="/welcome**" access="ROLE_USER" />
+		<form-login 
+		    login-page="/login" 
+		    default-target-url="/welcome" 
+			authentication-failure-url="/login?error" 
+			username-parameter="userName"
+			password-parameter="passWord"
+			authentication-success-handler-ref="myCustomAuthenticationSuccessHandler" />
+		<!-- <logout logout-success-url="/login?logout" />-->
+		<!-- enable csrf protection -->
+		<csrf/>
+	</http>
+<!--
+	<authentication-manager>
+		<authentication-provider>
+		  <user-service>
+			<user name="dogg" password="dogg" authorities="ROLE_USER" />
+			<user name="dogg2" password="dogg2" authorities="ROLE_USER" />
+		  </user-service>
+		  
+		</authentication-provider>
+	</authentication-manager>
+-->	
+
+	
+	
+	<authentication-manager>
+      <authentication-provider user-service-ref="myUserProfileService" >
+      	<password-encoder ref="passwordEncoder"></password-encoder>
+      </authentication-provider>
+    </authentication-manager> 
+    
+	
+<!-- custom authetication success handler  -->
+<beans:bean id="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+
+	   
+<beans:bean id = "myCustomAuthenticationSuccessHandler" class = "org.java.webapp.security.MyCustomAuthenticationSuccessHandler"/>
+
+
+</beans:beans>
